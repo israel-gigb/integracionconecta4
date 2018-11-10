@@ -1,0 +1,81 @@
+<HTML>
+<meta charset="UTF-8">
+<HEAD>
+<TITLE>test</TITLE>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<style>
+body{
+  margin-top: 30px;
+}
+</style>
+
+</HEAD>
+<BODY>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="well">
+        <h3 id="titulo">Usuarios en linea</h3>
+        <ul class="list-group" id="users"></ul>
+      </div>
+
+    </div>
+    <div class="col-md-8">
+      <div class="chat" id="chat"></div>
+
+      <form id="messageForm">
+        <div class="form-group">
+          <label>Enter message</label>
+          <textarea class="form-control" id="message"></textarea>
+            <br>
+              <input type="submit" class="btn btn-primary" value="Send" id="boton"/>
+        </div>
+      </div>
+  </div>
+</div>
+
+<script>
+$(function(){
+  var socket=io.connect();
+  var $messageForm = $('#messageForm');
+  var $message = $('#message');
+    var $chat = $('#chat');
+    var boton = $('#boton');
+    var board;
+    var room="";
+    if(room==""){
+      socket.emit('send room');
+    }
+
+    socket.on('room',function(data){
+        room=data.cuarto;
+        console.log(room);
+        boton.val(room);
+    })
+
+    $messageForm.submit(function(e){
+      e.preventDefault();
+      //socket.to('room1').emit('send message',$message.val());
+      socket.emit('send message',{msg:$message.val()});
+      $message.val('');
+      socket.emit('send board');
+    })
+
+    socket.on('message',function(data){
+      $chat.append('<div class="well">'+data.msg+'</div>');
+    })
+
+    socket.on('board',function(data){
+      alert(data.cuarto);
+    })
+
+    socket.on('bye',function(data){
+      alert("El otro jugador se salió del juego");
+    })
+
+});
+</script>
+</BODY>
+</HTML>
