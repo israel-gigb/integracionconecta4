@@ -1,81 +1,113 @@
 <HTML>
-<meta charset="UTF-8">
-<HEAD>
-<TITLE>test</TITLE>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="/socket.io/socket.io.js"></script>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<style>
-body{
-  margin-top: 30px;
+  <meta charset="UTF-8">
+  <HEAD>
+    <TITLE>test</TITLE>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+    body{
+      margin-top: 30px;
+    }
+    table {
+  table-layout: fixed;
+  width: 100%;
 }
-</style>
 
-</HEAD>
-<BODY>
-<div class="container">
-  <div class="row">
-    <div class="col-md-4">
-      <div class="well">
-        <h3 id="titulo">Usuarios en linea</h3>
-        <ul class="list-group" id="users"></ul>
-      </div>
+tr {
+  height: 6vw; /* Set this to whatever amount forms square cells */
+}
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+    </style>
 
-    </div>
-    <div class="col-md-8">
-      <div class="chat" id="chat"></div>
+  </HEAD>
+  <BODY>
+    <div class="container">
+      <div class="row">
 
-      <form id="messageForm">
-        <div class="form-group">
-          <label>Enter message</label>
-          <textarea class="form-control" id="message"></textarea>
-            <br>
-              <input type="submit" class="btn btn-primary" value="Send" id="boton"/>
+        <div class="col-md-8">
+          <p id="texto">Esperando oponente...</p>
+          </div>
+          <div class="col-md-4">
+            <div class="well">
+              <h4 id="usuario"><b>Usuario:</b></h4>
+              <h4 id="cuarto"><b>Cuarto:</b></h4>
+              <h4 id="oponente"><b>Oponente:</b></h4>
+              <ul class="list-group" id="users"></ul>
+            </div>
+
+          </div>
         </div>
       </div>
-  </div>
-</div>
 
-<script>
-$(function(){
-  var socket=io.connect();
-  var $messageForm = $('#messageForm');
-  var $message = $('#message');
-    var $chat = $('#chat');
-    var boton = $('#boton');
-    var board;
-    var room="";
-    if(room==""){
-      socket.emit('send room');
-    }
+      <script>
+      $(function(){
+        var socket=io.connect();
+        var usuario = $('#usuario');
+        var cuarto = $('#cuarto');
+        var oponente = $('#oponente');
+        var $texto = $('#texto');
+      //var $message = $('#message');
+        //var $chat = $('#chat');
+        //var boton = $('#boton');
+        var board;
+        var room="";
+        if(room==""){
+          socket.emit('send room');
+        }
 
-    socket.on('room',function(data){
-        room=data.cuarto;
-        console.log(room);
-        boton.val(room);
-    })
+        socket.on('room',function(data){
+          usuario.append(" "+data.usuario);
+          cuarto.append(" "+data.cuarto);
+        })
 
-    $messageForm.submit(function(e){
-      e.preventDefault();
-      //socket.to('room1').emit('send message',$message.val());
-      socket.emit('send message',{msg:$message.val()});
-      $message.val('');
-      socket.emit('send board');
-    })
+        /*$messageForm.submit(function(e){
+          e.preventDefault();
+          //socket.to('room1').emit('send message',$message.val());
+          socket.emit('send message',{msg:$message.val()});
+          $message.val('');
+        })*/
 
-    socket.on('message',function(data){
-      $chat.append('<div class="well">'+data.msg+'</div>');
-    })
+        socket.on('message',function(data){
+          $chat.append('<div class="well">'+data.msg+'</div>');
+        })
 
-    socket.on('board',function(data){
-      alert(data.cuarto);
-    })
+        socket.on('board',function(data){
+          //alert(data.tablero);
+          $texto.html("");
+          var myArray=data.tablero;
+          var result = "<table border=1>";
+          for(var i=0; i<myArray.length; i++) {
+            result += "<tr>";
+            for(var j=0; j<myArray[i].length; j++){
+              result += "<td>"+myArray[i][j]+"</td>";
+            }
+            result += "</tr>";
+          }
+          result += "</table>";
+          $texto.append(result);
+        })
 
-    socket.on('bye',function(data){
-      alert("El otro jugador se salió del juego");
-    })
+        socket.on('bye',function(data){
+          alert("El otro jugador se salió del juego");
+        })
 
-});
-</script>
-</BODY>
-</HTML>
+        socket.on('game',function(data){
+          //alert("game");
+          socket.emit('send opponent');
+          socket.emit('send board');
+          //oponente.append(" "+data.cuarto);
+        })
+
+        socket.on('opponent',function(data){
+          //alert(data.opponent);
+          oponente.append(" "+data.opponent);
+        })
+
+      });
+      </script>
+    </BODY>
+  </HTML>

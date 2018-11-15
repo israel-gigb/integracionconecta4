@@ -29,6 +29,7 @@ io.sockets.on('connection',function(socket){
   //desconexión
   socket.on('disconnect',function(data){
     aux=socket.username;
+    socket.leave(socket.room);
     socket.to(socket.room).emit('bye');
     connections.splice(connections.indexOf(socket),1);
     console.log('desconectado el '+aux+': hay %s',connections.length);
@@ -42,7 +43,13 @@ io.sockets.on('connection',function(socket){
 
   //enviar tablero del cuarto
   socket.on('send board',function(data){
-    socket.emit('board',{cuarto:io.sockets.adapter.rooms[socket.room].board});
+    socket.emit('board',{tablero:io.sockets.adapter.rooms[socket.room].board});
+  })
+
+  //enviar oponente al oponente
+  socket.on('send opponent',function(data){
+    //console.log(socket.username+' pide oponente');
+    socket.to(socket.room).emit('opponent', {opponent:socket.username});
   })
 
   //enviar cuarto en el que está el cliente que lo pide
@@ -51,16 +58,18 @@ io.sockets.on('connection',function(socket){
     if(contRooms%2==1){
       contRooms++;
       aux="room"+contRooms/2;
+      socket.rol=1;
     }
     else {
       aux="room"+contRooms/2;
       contRooms++;
+      socket.rol=2;
     }
     socket.join(aux);
     socket.room=aux;
 
     //prueba de guardar arreglo de juego como variable del room
-    if(aux=="room1"){
+    /*if(aux=="room1"){
       io.sockets.adapter.rooms[aux].board =
       [['-','-','-','-','-','-','-'],
       ['-','-','-','-','-','-','-'],
@@ -77,9 +86,7 @@ io.sockets.on('connection',function(socket){
       ['-','-','-','-','-','-','-'],
       ['-','-','-','-','-','-','-'],
       ['-','-','-','-','-','-','-']];
-    }
-
-    //console.log(io.sockets.adapter.rooms[aux].board);
+    }*/
 
     /*socket.join(aux, () => {
     let rooms = Object.keys(socket.rooms);
@@ -89,7 +96,19 @@ io.sockets.on('connection',function(socket){
     //console.log(rooms[1]); // [ <socket.id>, 'room 237' ]
   });*/
 
-  socket.emit('room',{cuarto:aux});
+  io.sockets.adapter.rooms[aux].board =
+  [['-','-','-','-','-','-','-'],
+  ['-','-','-','-','-','-','-'],
+  ['-','-','-','-','-','-','-'],
+  ['-','-','-','-','-','-','-'],
+  ['-','-','-','-','-','-','-'],
+  ['-','-','-','-','-','-','-']];
+
+  socket.emit('room',{usuario:socket.username,cuarto:aux});
+
+  if(io.sockets.adapter.rooms[aux].length==2){
+    io.in(socket.room).emit('game');
+  }
 });
 
 })
