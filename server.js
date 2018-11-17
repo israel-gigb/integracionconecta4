@@ -21,6 +21,7 @@ app.get('/',function(req,res){
 io.sockets.on('connection',function(socket){
 
   //variables directas de conexión
+  //socket.emit('connection',"hola respuesta");
   connections.push(socket);
   socket.username=cont;
   cont++;
@@ -34,6 +35,13 @@ io.sockets.on('connection',function(socket){
     connections.splice(connections.indexOf(socket),1);
     console.log('desconectado el '+aux+': hay %s',connections.length);
   })
+
+  socket.on('cliente',function(data){
+    //io.sockets.emit('new message',{msg:data});
+    console.log(data);
+    io.sockets.emit('res',"hola respuesta");
+  });
+
 
   //enviar mensaje
   socket.on('send message',function(data){

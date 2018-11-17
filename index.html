@@ -3,8 +3,7 @@
   <HEAD>
     <TITLE>test</TITLE>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <style>
     body{
       margin-top: 30px;
@@ -15,7 +14,7 @@
 }
 
 tr {
-  height: 6vw; /* Set this to whatever amount forms square cells */
+  height: 6vw;
 }
 td {
     text-align: center;
@@ -42,9 +41,10 @@ td {
           </div>
         </div>
       </div>
-
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
       <script>
       $(function(){
+        //var socket = io('http://172.32.148.161:2012');
         var socket=io.connect();
         var usuario = $('#usuario');
         var cuarto = $('#cuarto');
@@ -107,7 +107,28 @@ td {
           oponente.append(" "+data.opponent);
         })
 
+        socket.on('res',function(data){
+          //alert(data.opponent);
+          console.log(data);
+        })
+
+        /*socket.on('connect', function(){
+          //socket.emit('jugar',"Hola prueba");
+            //socket.disconnect();
+        });
+
+        socket.on('event', function(data){
+        });
+
+        socket.on('disconnect', function(){
+        });
+
+        socket.on('res',function(data){
+          alert(data);
+        })*/
+
       });
       </script>
+      <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     </BODY>
   </HTML>

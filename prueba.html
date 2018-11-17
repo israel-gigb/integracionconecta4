@@ -1,0 +1,27 @@
+<HTML>
+  <HEAD>
+    <TITLE>test</TITLE>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script>
+    var socket = io('http://172.32.148.161:2012');
+    socket.on('connect', function(){
+      socket.emit('jugar',"Hola prueba");
+        //socket.disconnect();
+    });
+    socket.on('event', function(data){
+
+    });
+    socket.on('disconnect', function(){
+
+    });
+
+    socket.on('res',function(data){
+      alert(data);
+    })
+  </script>
+
+</HEAD>
+<BODY>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</BODY>
+</HTML>
