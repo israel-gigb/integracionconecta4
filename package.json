@@ -1,9 +1,0 @@
-{
-  "name": "integracionconecta4",
-  "version": "0.0.1",
-  "description": "",
-  "dependencies": {
-    "express": "^4.15.2",
-    "socket.io": "^2.1.1"
-  }
-}
