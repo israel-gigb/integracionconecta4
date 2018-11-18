@@ -11,6 +11,7 @@
     table {
   table-layout: fixed;
   width: 100%;
+  background: #ffb74d;
 }
 
 tr {
@@ -19,6 +20,19 @@ tr {
 td {
     text-align: center;
     vertical-align: middle;
+}
+span.color {
+  background: #fafafa;
+  border-radius: 100%;
+  -moz-border-radius: 100%;
+  -webkit-border-radius: 100%;
+  color: #fff;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 15px;
+  text-align: center;
+  width: 1.6em;
 }
     </style>
 
@@ -79,11 +93,11 @@ td {
           //alert(data.tablero);
           $texto.html("");
           var myArray=data.tablero;
-          var result = "<table border=1>";
+          var result = "<table border=0>";
           for(var i=0; i<myArray.length; i++) {
             result += "<tr>";
             for(var j=0; j<myArray[i].length; j++){
-              result += "<td>"+myArray[i][j]+"</td>";
+              result += "<td><span class='color'>"+myArray[i][j]+"</span></td>";
             }
             result += "</tr>";
           }
