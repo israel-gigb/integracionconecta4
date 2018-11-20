@@ -23,6 +23,7 @@ io.sockets.on('connection',function(socket){
   //variables directas de conexión
   //socket.emit('connection',"hola respuesta");
   connections.push(socket);
+  //socket.emit('res',"hola andrea");
   socket.username=cont;
   cont++;
   console.log('conectado el '+socket.username+': hay %s',connections.length);
@@ -36,12 +37,11 @@ io.sockets.on('connection',function(socket){
     console.log('desconectado el '+aux+': hay %s',connections.length);
   })
 
-  socket.on('cliente',function(data){
+  socket.on('jugar',function(data){
     //io.sockets.emit('new message',{msg:data});
     console.log(data);
-    io.sockets.emit('res',"hola respuesta");
+    io.sockets.emit('res',"hola andrea");
   });
-
 
   //enviar mensaje
   socket.on('send message',function(data){
@@ -61,7 +61,7 @@ io.sockets.on('connection',function(socket){
   })
 
   //enviar cuarto en el que está el cliente que lo pide
-  socket.on('send room',function(){
+  socket.on('sendRoom',function(){
 
     if(contRooms%2==1){
       contRooms++;
@@ -105,14 +105,14 @@ io.sockets.on('connection',function(socket){
   });*/
 
   io.sockets.adapter.rooms[aux].board =
-    [[0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0]];
+  [[0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0]];
 
-  socket.emit('room',{usuario:socket.username,cuarto:aux});
+  socket.emit('getRoom',socket.rol,aux);
 
   if(io.sockets.adapter.rooms[aux].length==2){
     io.in(socket.room).emit('game');
