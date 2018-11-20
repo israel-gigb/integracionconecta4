@@ -1,71 +1,70 @@
-<HTML>
+<html>
   <meta charset="UTF-8">
-  <HEAD>
-    <TITLE>test</TITLE>
+  <head>
+    <title>test</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <style>
-    body{
-      margin-top: 30px;
-    }
-    table {
-  table-layout: fixed;
-  width: 100%;
-  background: #ffb74d;
-}
-
-tr {
-  height: 6vw;
-}
-td {
-    text-align: center;
-    vertical-align: middle;
-}
-span.blanco {
-  background: #fafafa;
-  border-radius: 100%;
-  -moz-border-radius: 100%;
-  -webkit-border-radius: 100%;
-  color: #fff;
-  display: inline-block;
-  font-size: 200%;
-  font-weight: bold;
-  line-height: 1.6em;
-  margin-right: 15px;
-  text-align: center;
-  width: 1.6em;
-}
-span.rojo {
-  background: #f44336;
-  border-radius: 100%;
-  -moz-border-radius: 100%;
-  -webkit-border-radius: 100%;
-  color: #fff;
-  font-size: 200%;
-  display: inline-block;
-  font-weight: bold;
-  line-height: 1.6em;
-  margin-right: 15px;
-  text-align: center;
-  width: 1.6em;
-}
-span.azul {
-  background: #2196f3;
-  border-radius: 100%;
-  font-size: 200%;
-  -moz-border-radius: 100%;
-  -webkit-border-radius: 100%;
-  color: #fff;
-  display: inline-block;
-  font-weight: bold;
-  line-height: 1.6em;
-  margin-right: 15px;
-  text-align: center;
-  width: 1.6em;
-}
+      body{
+        margin-top: 30px;
+      }
+      table {
+        table-layout: fixed;
+        width: 100%;
+        background: #ffb74d;
+      }
+      tr {
+        height: 6vw;
+      }
+      td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      span.blanco {
+        background: #fafafa;
+        border-radius: 100%;
+        -moz-border-radius: 100%;
+        -webkit-border-radius: 100%;
+        color: #fff;
+        display: inline-block;
+        font-size: 200%;
+        font-weight: bold;
+        line-height: 1.6em;
+        margin-right: 15px;
+        text-align: center;
+        width: 1.6em;
+      }
+      span.rojo {
+        background: #f44336;
+        border-radius: 100%;
+        -moz-border-radius: 100%;
+        -webkit-border-radius: 100%;
+        color: #fff;
+        font-size: 200%;
+        display: inline-block;
+        font-weight: bold;
+        line-height: 1.6em;
+        margin-right: 15px;
+        text-align: center;
+        width: 1.6em;
+      }
+      span.azul {
+        background: #2196f3;
+        border-radius: 100%;
+        font-size: 200%;
+        -moz-border-radius: 100%;
+        -webkit-border-radius: 100%;
+        color: #fff;
+        display: inline-block;
+        font-weight: bold;
+        line-height: 1.6em;
+        margin-right: 15px;
+        text-align: center;
+        width: 1.6em;
+      }
     </style>
-  </HEAD>
-  <BODY>
+  </head>
+  <body>
     <div class="container">
       <div class="row">
         <div class="col-md-8">
@@ -81,80 +80,72 @@ span.azul {
           </div>
         </div>
       </div>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-      <script>
-      $(function(){
-        //var socket = io('http://172.32.148.161:2012');
-        var socket=io.connect();
-        var usuario = $('#usuario');
-        var cuarto = $('#cuarto');
-        var oponente = $('#oponente');
-        var $texto = $('#texto');
-      //var $message = $('#message');
-        //var $chat = $('#chat');
-        //var boton = $('#boton');
-        var board;
-        var room="";
-        if(room==""){
-          socket.emit('send room');
-        }
-
-        socket.on('room',function(data){
-          usuario.append(" "+data.usuario);
-          cuarto.append(" "+data.cuarto);
-        })
-
-        /*$messageForm.submit(function(e){
-          e.preventDefault();
-          //socket.to('room1').emit('send message',$message.val());
-          socket.emit('send message',{msg:$message.val()});
-          $message.val('');
-        })*/
-
-        socket.on('message',function(data){
-          $chat.append('<div class="well">'+data.msg+'</div>');
-        })
-
-        socket.on('board',function(data){
-          //alert(data.tablero);
-          $texto.html("");
-          var myArray=data.tablero;
-          var result = "<table border=0>";
-          for(var i=0; i<myArray.length; i++) {
-            result += "<tr>";
-            for(var j=0; j<myArray[i].length; j++){
-              if(myArray[i][j]==0) result += "<td><span class='blanco'>"+myArray[i][j]+"</span></td>";
-              if(myArray[i][j]==1) result += "<td><span class='rojo'>"+myArray[i][j]+"</span></td>";
-              if(myArray[i][j]==2) result += "<td><span class='azul'>"+myArray[i][j]+"</span></td>";
-            }
-            result += "</tr>";
+      <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script>
+        $(function(){
+          //var socket = io('http://172.32.148.161:2012');
+          var socket=io.connect();
+          var usuario = $('#usuario');
+          var cuarto = $('#cuarto');
+          var oponente = $('#oponente');
+          var $texto = $('#texto');
+          //var $message = $('#message');
+          //var $chat = $('#chat');
+          //var boton = $('#boton');
+          var board;
+          var room="";
+          if(room==""){
+            socket.emit('send room');
           }
-          result += "</table>";
-          $texto.append(result);
-        })
-
-        socket.on('bye',function(data){
-          alert("El otro jugador se salió del juego");
-        })
-
-        socket.on('game',function(data){
-          //alert("game");
-          socket.emit('send opponent');
-          socket.emit('send board');
-          //oponente.append(" "+data.cuarto);
-        })
-
-        socket.on('opponent',function(data){
-          //alert(data.opponent);
-          oponente.append(" "+data.opponent);
-        })
-
-        socket.on('res',function(data){
-          //alert(data.opponent);
-          console.log(data);
-        })
-      });
+          socket.on('room',function(data){
+            usuario.append(" "+data.usuario);
+            cuarto.append(" "+data.cuarto);
+          })
+          /*$messageForm.submit(function(e){
+            e.preventDefault();
+            //socket.to('room1').emit('send message',$message.val());
+            socket.emit('send message',{msg:$message.val()});
+            $message.val('');
+          })*/
+          socket.on('message',function(data){
+            $chat.append('<div class="well">'+data.msg+'</div>');
+          })
+          socket.on('board',function(data){
+            //alert(data.tablero);
+            $texto.html("");
+            var myArray=data.tablero;
+            var result = "<table border=0>";
+            for(var i=0; i<myArray.length; i++) {
+              result += "<tr>";
+              for(var j=0; j<myArray[i].length; j++){
+                if(myArray[i][j]==0) result += "<td><span class='blanco'>"+myArray[i][j]+"</span></td>";
+                if(myArray[i][j]==1) result += "<td><span class='rojo'>"+myArray[i][j]+"</span></td>";
+                if(myArray[i][j]==2) result += "<td><span class='azul'>"+myArray[i][j]+"</span></td>";
+              }
+              result += "</tr>";
+            }
+            result += "</table>";
+            $texto.append(result);
+          })
+          socket.on('bye',function(data){
+            alert("El otro jugador se salió del juego");
+          })
+          socket.on('game',function(data){
+            //alert("game");
+            socket.emit('send opponent');
+            socket.emit('send board');
+            //oponente.append(" "+data.cuarto);
+          })
+          socket.on('opponent',function(data){
+            //alert(data.opponent);
+            oponente.append(" "+data.opponent);
+          })
+          socket.on('res',function(data){
+            //alert(data.opponent);
+            console.log(data);
+          })
+        });
       </script>
       <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    </BODY>
-  </HTML>
+    </body>
+  </html>
