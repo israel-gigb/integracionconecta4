@@ -4,22 +4,23 @@
     <TITLE>test</TITLE>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <style>
     body{
       margin-top: 30px;
     }
     table {
-  table-layout: fixed;
-  width: 100%;
-}
+      table-layout: fixed;
+      width: 100%;
+    }
 
-tr {
-  height: 6vw;
-}
-td {
-    text-align: center;
-    vertical-align: middle;
-}
+    tr {
+      height: 6vw;
+    }
+    td {
+      text-align: center;
+      vertical-align: middle;
+    }
     </style>
 
   </HEAD>
@@ -29,125 +30,168 @@ td {
 
         <div class="col-md-8">
           <p id="texto">Esperando oponente...</p>
+        </div>
+        <div class="col-md-4">
+          <div class="well">
+            <h4 id="usuario"><b>Usuario:</b></h4>
+            <h4 id="cuarto"><b>Cuarto:</b></h4>
+            <h4 id="oponente"><b>Oponente:</b></h4>
+            <ul class="list-group" id="users"></ul>
           </div>
-          <div class="col-md-4">
-            <div class="well">
-              <h4 id="usuario"><b>Usuario:</b></h4>
-              <h4 id="cuarto"><b>Cuarto:</b></h4>
-              <h4 id="oponente"><b>Oponente:</b></h4>
-              <ul class="list-group" id="users"></ul>
-            </div>
 
-          </div>
         </div>
       </div>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-      <script>
-      $(function(){
-        //var socket = io('http://172.32.148.161:2012');
-        var socket=io.connect();
-        var usuario = $('#usuario');
-        var cuarto = $('#cuarto');
-        var oponente = $('#oponente');
-        var $texto = $('#texto');
+    </div>
+
+    <script>
+    $(function(){
+      //var socket = io('http://172.32.148.161:2012');
+      var socket=io.connect();
+      var $usuario = $('#usuario');
+      var $cuarto = $('#cuarto');
+      var oponente = $('#oponente');
+      var $texto = $('#texto');
       //var $message = $('#message');
-        //var $chat = $('#chat');
-        //var boton = $('#boton');
-        var board;
-        var room="";
-        /*if(room==""){
-          socket.emit('sendRoom');
-        }*/
+      //var $chat = $('#chat');
+      //var boton = $('#boton');
+      var $board=[[0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0]];
+      var $col;
+      var $room="";
+      var $rol="";
+      /*if(room==""){
+      socket.emit('sendRoom');
+    }*/
 
-        socket.on('getRoom',function(usuario,cuarto){
-          alert(usuario);
-          alert(cuarto);
-          usuario.append(" "+usuario);
-          cuarto.append(" "+cuarto);
-        })
+    socket.on('getRoom',function(usuario,cuarto){
+      //alert(usuario);
+      //alert(cuarto);
+      $rol=usuario;
+      $room=cuarto;
+      $usuario.append(" "+$rol);
+      $cuarto.append(" "+$room);
 
-        socket.on('connect', function(){
-          socket.emit('sendRoom');
-            //socket.disconnect();
-        });
+      /*usuario.append(" "+$rol);
+      cuarto.append(" "+room);
 
-        /*$messageForm.submit(function(e){
-          e.preventDefault();
-          //socket.to('room1').emit('send message',$message.val());
-          socket.emit('send message',{msg:$message.val()});
-          $message.val('');
-        })*/
+      if($rol==1)
+      oponente=2;
+      else
+      oponente=1;
 
-        socket.on('message',function(data){
-          $chat.append('<div class="well">'+data.msg+'</div>');
-        })
+      oponente.append(" "+oponente);*/
+    })
 
-        socket.on('board',function(data){
-          //alert(data.tablero);
-          $texto.html("");
-          var myArray=data.tablero;
-          var result = "<table border=1>";
-          for(var i=0; i<myArray.length; i++) {
-            result += "<tr>";
-            for(var j=0; j<myArray[i].length; j++){
-              result += "<td>"+myArray[i][j]+"</td>";
-            }
-            result += "</tr>";
-          }
-          result += "</table>";
-          $texto.append(result);
-        })
+    socket.on('connect', function(){
+      socket.emit('sendRoom');
+      //socket.disconnect();
+    });
 
-        socket.on('bye',function(data){
-          alert("El otro jugador se salió del juego");
-        })
+    socket.on('move', function(rol,col,msg){
+col--;
+      for(var i=5; i>=0; i--){
+        if($board[i][col]==0){
+      $board[i][col]=rol;
+        break;
+      }
+      }
 
-        socket.on('game',function(data){
-          //alert("game");
-          socket.emit('send opponent');
-          socket.emit('send board');
-          //oponente.append(" "+data.cuarto);
-        })
+      $texto.html("");
+      var result = "<table border=1>";
+      for(var i=0; i<$board.length; i++) {
+        result += "<tr>";
+        for(var j=0; j<$board[i].length; j++){
+          result += "<td>"+$board[i][j]+"</td>";
+        }
+        result += "</tr>";
+      }
+      result += "</table>";
+      $texto.append(result);
+      //socket.emit('sendRoom');
+      //socket.disconnect();
+      if(rol!=$rol){
+        $col= Math.ceil(Math.random() * 7);
+        socket.emit('play',$rol,$col);
+      }
+    });
 
-        socket.on('opponent',function(data){
-          //alert(data.opponent);
-          oponente.append(" "+data.opponent);
-        })
+    /*$messageForm.submit(function(e){
+    e.preventDefault();
+    //socket.to('room1').emit('send message',$message.val());
+    socket.emit('send message',{msg:$message.val()});
+    $message.val('');
+  })*/
 
-        socket.on('res',function(data){
-          //alert(data.opponent);
-          console.log(data);
-        })
+  socket.on('message',function(data){
+    $chat.append('<div class="well">'+data.msg+'</div>');
+  })
+
+  socket.on('board',function(data){
+    //alert(data.tablero);
+  })
+
+  socket.on('bye',function(data){
+    //alert("Fin o El otro jugador se salió del juego");
+    socket.disconnect();
+  })
+
+  socket.on('ready',function(rol){
+    //alert("game");
+    //socket.emit('send opponent');
+    //socket.emit('send board');
+    //alert(rol);
+    //console.log(rol);
+
+    if(rol==1){
+      $col= Math.ceil(Math.random() * 7);
+      socket.emit('play',rol,$col);
+    }
+    //oponente.append(" "+data.cuarto);
+  })
+
+  socket.on('opponent',function(data){
+    //alert(data.opponent);
+    oponente.append(" "+data.opponent);
+  })
+
+  socket.on('res',function(data){
+    //alert(data.opponent);
+    console.log(data);
+  })
 
 
-        socket.on('event', function(data){
+  socket.on('event', function(data){
 
-        });
-        socket.on('disconnect', function(){
+  });
+  socket.on('disconnect', function(){
 
-        });
+  });
 
-        socket.on('res',function(data){
-          alert(data);
-        })
+  socket.on('res',function(data){
+    alert(data);
+  })
 
-        /*socket.on('connect', function(){
-          //socket.emit('jugar',"Hola prueba");
-            //socket.disconnect();
-        });
+  /*socket.on('connect', function(){
+  //socket.emit('jugar',"Hola prueba");
+  //socket.disconnect();
+});
 
-        socket.on('event', function(data){
-        });
+socket.on('event', function(data){
+});
 
-        socket.on('disconnect', function(){
-        });
+socket.on('disconnect', function(){
+});
 
-        socket.on('res',function(data){
-          alert(data);
-        })*/
+socket.on('res',function(data){
+alert(data);
+})*/
 
-      });
-      </script>
-      <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    </BODY>
-  </HTML>
+});
+</script>
+
+</BODY>
+</HTML>
