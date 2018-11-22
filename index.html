@@ -34,7 +34,7 @@
         <div class="col-md-4">
           <div class="well">
             <h4 id="usuario"><b>Usuario:</b></h4>
-            <h4 id="cuarto"><b>Cuarto:</b></h4>
+            <h4 id="cuarto"><b>Juego:</b></h4>
             <h4 id="oponente"><b>Oponente:</b></h4>
             <ul class="list-group" id="users"></ul>
           </div>
@@ -49,7 +49,7 @@
       var socket=io.connect();
       var $usuario = $('#usuario');
       var $cuarto = $('#cuarto');
-      var oponente = $('#oponente');
+      var $oponente = $('#oponente');
       var $texto = $('#texto');
       //var $message = $('#message');
       //var $chat = $('#chat');
@@ -75,15 +75,18 @@
       $usuario.append(" "+$rol);
       $cuarto.append(" "+$room);
 
+      var op;
+      if($rol==1)
+      op=2;
+      else
+      op=1;
+
+      $oponente.append(" "+op);
+
       /*usuario.append(" "+$rol);
       cuarto.append(" "+room);
 
-      if($rol==1)
-      oponente=2;
-      else
-      oponente=1;
-
-      oponente.append(" "+oponente);*/
+      */
     })
 
     socket.on('connect', function(){
@@ -91,13 +94,14 @@
       //socket.disconnect();
     });
 
-    socket.on('move', function(rol,col,msg){
-col--;
+    socket.on('result', function(rol,col,msg){
+
+      col--;
       for(var i=5; i>=0; i--){
         if($board[i][col]==0){
-      $board[i][col]=rol;
-        break;
-      }
+          $board[i][col]=rol;
+          break;
+        }
       }
 
       $texto.html("");
@@ -111,79 +115,117 @@ col--;
       }
       result += "</table>";
       $texto.append(result);
-      //socket.emit('sendRoom');
+      setTimeout(
+        function()
+        {
+          alert(msg);
+          socket.disconnect();
+        }, 1000);
+
+      });
+
+      socket.on('move', function(rol,col,msg){
+        col--;
+        for(var i=5; i>=0; i--){
+          if($board[i][col]==0){
+            $board[i][col]=rol;
+            break;
+          }
+        }
+
+        $texto.html("");
+        var result = "<table border=1>";
+        for(var i=0; i<$board.length; i++) {
+          result += "<tr>";
+          for(var j=0; j<$board[i].length; j++){
+            result += "<td>"+$board[i][j]+"</td>";
+          }
+          result += "</tr>";
+        }
+        result += "</table>";
+        $texto.append(result);
+        //socket.emit('sendRoom');
+        //socket.disconnect();
+
+        if(rol!=$rol){
+          $col= Math.ceil(Math.random() * 7);
+
+          setTimeout(
+            function()
+            {
+              socket.emit('play',$rol,$col);
+            }, 1000);
+          }
+
+
+
+        });
+
+        /*$messageForm.submit(function(e){
+        e.preventDefault();
+        //socket.to('room1').emit('send message',$message.val());
+        socket.emit('send message',{msg:$message.val()});
+        $message.val('');
+      })*/
+
+      socket.on('message',function(data){
+        $chat.append('<div class="well">'+data.msg+'</div>');
+      })
+
+      socket.on('board',function(data){
+        //alert(data.tablero);
+      })
+
+      socket.on('bye',function(data){
+        //alert("Fin o El otro jugador se salió del juego");
+        socket.disconnect();
+      })
+
+      socket.on('ready',function(rol){
+        //alert("game");
+        //socket.emit('send opponent');
+        //socket.emit('send board');
+        //alert(rol);
+        //console.log(rol);
+
+        if(rol==1){
+          $col= Math.ceil(Math.random() * 7);
+          socket.emit('play',rol,$col);
+        }
+        //$oponente.append(" "+data.cuarto);
+      })
+
+      socket.on('opponent',function(data){
+        //alert(data.opponent);
+        $oponente.append(" "+data.opponent);
+      })
+
+      socket.on('res',function(data){
+        //alert(data.opponent);
+        console.log(data);
+      })
+
+
+      socket.on('event', function(data){
+
+      });
+      socket.on('disconnect', function(){
+
+      });
+
+      socket.on('res',function(data){
+        alert(data);
+      })
+
+      /*socket.on('connect', function(){
+      //socket.emit('jugar',"Hola prueba");
       //socket.disconnect();
-      if(rol!=$rol){
-        $col= Math.ceil(Math.random() * 7);
-        socket.emit('play',$rol,$col);
-      }
     });
 
-    /*$messageForm.submit(function(e){
-    e.preventDefault();
-    //socket.to('room1').emit('send message',$message.val());
-    socket.emit('send message',{msg:$message.val()});
-    $message.val('');
-  })*/
-
-  socket.on('message',function(data){
-    $chat.append('<div class="well">'+data.msg+'</div>');
-  })
-
-  socket.on('board',function(data){
-    //alert(data.tablero);
-  })
-
-  socket.on('bye',function(data){
-    //alert("Fin o El otro jugador se salió del juego");
-    socket.disconnect();
-  })
-
-  socket.on('ready',function(rol){
-    //alert("game");
-    //socket.emit('send opponent');
-    //socket.emit('send board');
-    //alert(rol);
-    //console.log(rol);
-
-    if(rol==1){
-      $col= Math.ceil(Math.random() * 7);
-      socket.emit('play',rol,$col);
-    }
-    //oponente.append(" "+data.cuarto);
-  })
-
-  socket.on('opponent',function(data){
-    //alert(data.opponent);
-    oponente.append(" "+data.opponent);
-  })
-
-  socket.on('res',function(data){
-    //alert(data.opponent);
-    console.log(data);
-  })
-
-
-  socket.on('event', function(data){
-
+    socket.on('event', function(data){
   });
+
   socket.on('disconnect', function(){
-
-  });
-
-  socket.on('res',function(data){
-    alert(data);
-  })
-
-  /*socket.on('connect', function(){
-  //socket.emit('jugar',"Hola prueba");
-  //socket.disconnect();
-});
-
-socket.on('event', function(data){
-});
-
-socket.on('disconnect', function(){
 });
 
 socket.on('res',function(data){
