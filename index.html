@@ -88,9 +88,9 @@
       //socket.disconnect();
     });
 
-    socket.on('result', function(rol,col,msg){
-
-      col--;
+    socket.on('result', function(rol,col,num){
+      if(num==1 || num==3){
+        col--;
       for(var i=5; i>=0; i--){
         if($board[i][col]==0){
           $board[i][col]=rol;
@@ -109,13 +109,42 @@
       }
       result += "</table>";
       $texto.append(result);
-      setTimeout(
-        function()
-        {
-          alert(msg);
-          socket.disconnect();
-        }, 1000);
+      }
 
+      if(num==1){
+          if($rol==rol){
+              setTimeout(function(){
+              alert("Ganaste.");
+              socket.disconnect();
+            }, 1000);
+          }
+          else{
+            setTimeout(function(){
+              alert("Perdiste.");
+              socket.disconnect();
+            }, 1000);
+          }
+        }
+        if(num==2){
+          if($rol==rol){
+              setTimeout(function(){
+              alert("Ganaste por un movimiento ilegal de tu oponente.");
+              socket.disconnect();
+            }, 1000);
+          }
+          else{
+            setTimeout(function(){
+              alert("Perdiste por un movimiento ilegal.");
+              socket.disconnect();
+            }, 1000);
+          }
+        }
+        if(num==3){
+              setTimeout(function(){
+              alert("Empate.");
+              socket.disconnect();
+            }, 1000);
+          }
       });
 
       socket.on('move', function(rol,col,msg){
@@ -142,6 +171,7 @@
         //socket.disconnect();
 
         if(rol!=$rol){
+          
           $col= Math.ceil(Math.random() * 7);
 
           setTimeout(

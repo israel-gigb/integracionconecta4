@@ -91,7 +91,7 @@ if(colAux<=7&&colAux>=1){
     if(resp==0){
       if(io.sockets.adapter.rooms[socket.room].contCuarto==42){
         console.log("empate");
-        io.in(socket.room).emit('draw',"Empate");
+        io.in(socket.room).emit('result',rol,col, 3);
       }
       else
       io.in(socket.room).emit('move',rol,col,"El cliente "+rol+" envió "+col);
@@ -99,13 +99,14 @@ if(colAux<=7&&colAux>=1){
     }
     else{
       console.log("ganó: "+resp+" del juego "+socket.room);
-      io.in(socket.room).emit('result',rol,col,"ganó: "+resp);
+      io.in(socket.room).emit('result',rol,col, 1);
       //}
 
     }
   }
   else{
     console.log("perdió: "+rol);
+    io.in(socket.room).emit('result',rol,col, 2);
   }
 
 
@@ -113,6 +114,7 @@ if(colAux<=7&&colAux>=1){
 else{
   //persona perdio, checar
   console.log("perdió: "+rol);
+  io.in(socket.room).emit('result',rol,col, 2);
   //io.in(socket.room).emit('result',rol,col,"perdió: "+rol);
   //}
 
