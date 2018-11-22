@@ -69,31 +69,45 @@ io.sockets.on('connection',function(socket){
 else {*/
 if(colAux<=7&&colAux>=1){
 
-var tablero=io.sockets.adapter.rooms[socket.room].board;
+  var tablero=io.sockets.adapter.rooms[socket.room].board;
   col--;
-        for(var i=5; i>=0; i--){
-          if(tablero[i][col]==0){
+
+  if(tablero[0][col]==0){
+    for(var i=5; i>=0; i--){
+      if(tablero[i][col]==0){
         tablero[i][col]=rol;
-          break;
-        }
-        }
-        col++;
+        break;
+      }
+    }
+    col++;
 
-io.sockets.adapter.rooms[socket.room].board=tablero;
+    io.sockets.adapter.rooms[socket.room].board=tablero;
 
-console.log(tablero);
+    console.log(tablero);
+    io.sockets.adapter.rooms[socket.room].contCuarto++;
 
-  var resp=checarGanador(io.sockets.adapter.rooms[socket.room].board);
-  if(resp==0){
+    var resp=checarGanador(io.sockets.adapter.rooms[socket.room].board);
 
-  io.in(socket.room).emit('move',rol,col,"El cliente "+rol+" envió "+col);
-}
-  else{
-    console.log("ganó: "+resp+" del juego "+socket.room);
-    io.in(socket.room).emit('result',rol,col,"ganó: "+resp);
-    //}
+    if(resp==0){
+      if(io.sockets.adapter.rooms[socket.room].contCuarto==42){
+        console.log("empate");
+        io.in(socket.room).emit('draw',"Empate");
+      }
+      else
+      io.in(socket.room).emit('move',rol,col,"El cliente "+rol+" envió "+col);
 
+    }
+    else{
+      console.log("ganó: "+resp+" del juego "+socket.room);
+      io.in(socket.room).emit('result',rol,col,"ganó: "+resp);
+      //}
+
+    }
   }
+  else{
+    console.log("perdió: "+rol);
+  }
+
 
 }
 else{
@@ -184,7 +198,7 @@ io.sockets.adapter.rooms[aux].rolCuarto=1;
 socket.emit('getRoom',socket.rol,aux);
 
 if(io.sockets.adapter.rooms[aux].length==2){
-
+  io.sockets.adapter.rooms[aux].contCuarto=0;
   socket.to(socket.room).emit('ready',1);
   //io.in(socket.room).emit('ready',1);
 }
