@@ -13,7 +13,6 @@
       table-layout: fixed;
       width: 100%;
     }
-
     tr {
       height: 6vw;
     }
@@ -21,8 +20,49 @@
       text-align: center;
       vertical-align: middle;
     }
+    span.blanco {
+      background: #fafafa;
+      border-radius: 100%;
+      -moz-border-radius: 100%;
+      -webkit-border-radius: 100%;
+      color: #fafafa;
+      display: inline-block;
+      font-size: 300%;
+      font-weight: bold;
+      line-height: 1.6em;
+      margin: auto;
+      text-align: center;
+      width: 1.6em;
+    }
+    span.rojo {
+      background: #f44336;
+      border-radius: 100%;
+      -moz-border-radius: 100%;
+      -webkit-border-radius: 100%;
+      color: #f44336;
+      font-size: 300%;
+      display: inline-block;
+      font-weight: bold;
+      line-height: 1.6em;
+      margin: auto;
+      text-align: center;
+      width: 1.6em;
+    }
+    span.azul {
+      background: #2196f3;
+      border-radius: 100%;
+      font-size: 300%;
+      -moz-border-radius: 100%;
+      -webkit-border-radius: 100%;
+      color: #2196f3;
+      display: inline-block;
+      font-weight: bold;
+      line-height: 1.6em;
+      margin: auto;
+      text-align: center;
+      width: 1.6em;
+    }
     </style>
-
   </HEAD>
   <BODY>
     <div class="container">
@@ -43,7 +83,6 @@
         </div>
       </div>
     </div>
-
     <script>
     $(function(){
       //var socket = io('http://172.32.148.161:2012');
@@ -67,27 +106,22 @@
       /*if(room==""){
       socket.emit('sendRoom');
     }*/
-
     socket.on('getRoom',function(usuario,cuarto){
       $rol=usuario;
       $room=cuarto;
       $usuario.append(" "+$rol);
       $cuarto.append(" "+$room);
-
       var op;
       if($rol==1)
       op=2;
       else
       op=1;
-
       $oponente.append(" "+op);
     })
-
     socket.on('connect', function(){
       socket.emit('sendRoom');
       //socket.disconnect();
     });
-
     socket.on('result', function(rol,col,num){
       if(num==1 || num==3){
         col--;
@@ -97,20 +131,19 @@
           break;
         }
       }
-
-      $texto.html("");
-      var result = "<table border=1>";
+      var result = "<table border=0>";
       for(var i=0; i<$board.length; i++) {
         result += "<tr>";
         for(var j=0; j<$board[i].length; j++){
-          result += "<td>"+$board[i][j]+"</td>";
+          if($board[i][j]==0) result += "<td><span class='blanco'>"+$board[i][j]+"</span></td>";
+          if($board[i][j]==1) result += "<td><span class='rojo'>"+$board[i][j]+"</span></td>";
+          if($board[i][j]==2) result += "<td><span class='azul'>"+$board[i][j]+"</span></td>";
         }
         result += "</tr>";
       }
       result += "</table>";
       $texto.append(result);
       }
-
       if(num==1){
           if($rol==rol){
               setTimeout(function(){
@@ -146,7 +179,6 @@
             }, 1000);
           }
       });
-
       socket.on('move', function(rol,col,msg){
         col--;
         for(var i=5; i>=0; i--){
@@ -155,13 +187,14 @@
             break;
           }
         }
-
         $texto.html("");
-        var result = "<table border=1>";
+        var result = "<table border=0>";
         for(var i=0; i<$board.length; i++) {
           result += "<tr>";
           for(var j=0; j<$board[i].length; j++){
-            result += "<td>"+$board[i][j]+"</td>";
+            if($board[i][j]==0) result += "<td><span class='blanco'>"+$board[i][j]+"</span></td>";
+            if($board[i][j]==1) result += "<td><span class='rojo'>"+$board[i][j]+"</span></td>";
+            if($board[i][j]==2) result += "<td><span class='azul'>"+$board[i][j]+"</span></td>";
           }
           result += "</tr>";
         }
@@ -169,11 +202,9 @@
         $texto.append(result);
         //socket.emit('sendRoom');
         //socket.disconnect();
-
         if(rol!=$rol){
-          
-          $col= Math.ceil(Math.random() * 7);
 
+          $col= Math.ceil(Math.random() * 7);
           setTimeout(
             function()
             {
@@ -181,14 +212,11 @@
             }, 1000);
           }
         });
-
       socket.on('bye',function(data){
         //alert("Fin o El otro jugador se salió del juego");
         socket.disconnect();
       })
-
       socket.on('ready',function(rol){
-
         $texto.html("");
         var result = "<table border=1>";
         for(var i=0; i<$board.length; i++) {
@@ -200,20 +228,15 @@
         }
         result += "</table>";
         $texto.append(result);
-
         if(rol==1){
           $col= Math.ceil(Math.random() * 7);
           socket.emit('play',rol,$col);
         }
       })
-
       socket.on('event', function(data){
-
       });
       socket.on('disconnect', function(){
-
       });
-
       socket.on('draw',function(msg){
         setTimeout(
           function()
@@ -222,7 +245,6 @@
             socket.disconnect();
           }, 1000);
       })
-
 });
 </script>
 

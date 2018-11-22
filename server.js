@@ -182,7 +182,6 @@ io.sockets.adapter.rooms[aux].board =
 let rooms = Object.keys(socket.rooms);
 socket.room=rooms[1];
 aux=socket.room;
-
 //console.log(rooms[1]); // [ <socket.id>, 'room 237' ]
 });*/
 
