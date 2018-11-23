@@ -85,8 +85,8 @@
     </div>
     <script>
     $(function(){
-      //var socket = io('http://172.32.144.7:3000');
-      var socket=io.connect();
+      //var socket = io('http://172.32.130.207:3000');
+    var socket=io.connect();
       var $usuario = $('#usuario');
       var $cuarto = $('#cuarto');
       var $oponente = $('#oponente');
@@ -229,7 +229,7 @@
           }
         });
       socket.on('bye',function(data){
-        //alert("Fin o El otro jugador se salió del juego");
+        alert("Fin del juego, el otro jugador se fue del juego.");
         socket.disconnect();
       })
       socket.on('ready',function(rol){
