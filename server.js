@@ -93,8 +93,16 @@ if(colAux<=7&&colAux>=1){
         console.log("empate");
         io.in(socket.room).emit('result',rol,col, 3);
       }
-      else
-      io.in(socket.room).emit('move',rol,col,"El cliente "+rol+" envió "+col);
+      else{
+        //console.log("sigue juego");
+        var a=rol+"";
+        var b=col+"";
+        var mensaje="El cliente "+a+" coloca "+b;
+        console.log(mensaje);
+        io.in(socket.room).emit('move',rol,col,mensaje);
+      //io.in(socket.room).emit('move',rol,col,"El cliente "+rol+" envió "+col);
+      //io.in(socket.room).emit('prueba');
+    }
 
     }
     else{
