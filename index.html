@@ -27,7 +27,7 @@
       -webkit-border-radius: 100%;
       color: #fafafa;
       display: inline-block;
-      font-size: 300%;
+      font-size: 200%;
       font-weight: bold;
       line-height: 1.6em;
       margin: auto;
@@ -40,7 +40,7 @@
       -moz-border-radius: 100%;
       -webkit-border-radius: 100%;
       color: #f44336;
-      font-size: 300%;
+      font-size: 200%;
       display: inline-block;
       font-weight: bold;
       line-height: 1.6em;
@@ -51,7 +51,7 @@
     span.azul {
       background: #2196f3;
       border-radius: 100%;
-      font-size: 300%;
+      font-size: 200%;
       -moz-border-radius: 100%;
       -webkit-border-radius: 100%;
       color: #2196f3;
@@ -66,9 +66,9 @@
   </HEAD>
   <BODY>
     <div class="container">
-      <h2>Conecta 4</h2>
+      <h1><b>Conecta 4</b></h1>
+      <br>
       <div class="row">
-
         <div class="col-md-8">
           <p id="texto">Esperando oponente...</p>
         </div>
@@ -79,7 +79,6 @@
             <h4 id="oponente"><b>Oponente:</b></h4>
             <ul class="list-group" id="users"></ul>
           </div>
-
         </div>
       </div>
     </div>
@@ -109,14 +108,28 @@
     socket.on('getRoom',function(usuario,cuarto){
       $rol=usuario;
       $room=cuarto;
-      $usuario.append(" "+$rol);
-      $cuarto.append(" "+$room);
       var op;
-      if($rol==1)
-      op=2;
-      else
-      op=1;
-      $oponente.append(" "+op);
+      var color;
+      var colorh;
+      var colorOp;
+      var colorOph;
+      if($rol==1) {
+        op=2;
+        color="rojo";
+        colorh="#f44336";
+        colorOp="azul";
+        colorOph="#2196f3";
+      }
+      else {
+        op=1;
+        color="azul";
+        colorh="#2196f3";
+        colorOp="rojo";
+        colorOph="#f44336";
+      }
+      $usuario.append(" "+$rol+" (<span style='color:"+colorh+"'>"+color+"</span>)");
+      $cuarto.append(" "+$room);
+      $oponente.append(" "+op+" (<span style='color:"+colorOph+"'>"+colorOp+"</span>)");
     })
     socket.on('connect', function(){
       socket.emit('sendRoom');
