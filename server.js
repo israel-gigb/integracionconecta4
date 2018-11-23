@@ -45,7 +45,7 @@ io.sockets.on('connection',function(socket){
   socket.on('play',function(rol,col){
     //io.sockets.emit('new message',{msg:data});
     //console.log("entro el play");
-    console.log(rol+" "+col);
+    console.log("El cliente "+rol+" coloca "+col);
     //console.log(data);
     var rolAux=rol;
     var colAux=col;
@@ -98,7 +98,7 @@ if(colAux<=7&&colAux>=1){
         var a=rol+"";
         var b=col+"";
         var mensaje="El cliente "+a+" coloca "+b;
-        console.log(mensaje);
+        //console.log(mensaje);
         io.in(socket.room).emit('move',rol,col,mensaje);
       //io.in(socket.room).emit('move',rol,col,"El cliente "+rol+" envió "+col);
       //io.in(socket.room).emit('prueba');
@@ -114,6 +114,10 @@ if(colAux<=7&&colAux>=1){
   }
   else{
     console.log("perdió: "+rol);
+    if(rol==1)
+    rol=2;
+    else
+    rol=1;
     io.in(socket.room).emit('result',rol,col, 2);
   }
 
@@ -122,6 +126,10 @@ if(colAux<=7&&colAux>=1){
 else{
   //persona perdio, checar
   console.log("perdió: "+rol);
+  if(rol==1)
+  rol=2;
+  else
+  rol=1;
   io.in(socket.room).emit('result',rol,col, 2);
   //io.in(socket.room).emit('result',rol,col,"perdió: "+rol);
   //}
@@ -247,3 +255,9 @@ function checarGanador(m) {
 }
 
 })
+/*
+Referencias:
+https://stackoverflow.com/questions/43745761/javascript-connect-4-game-checking-a-winner
+https://socket.io/docs/emit-cheatsheet/
+https://www.youtube.com/watch?v=tHbCkikFfDE&t=1730s
+*/
